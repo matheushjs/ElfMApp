@@ -6,8 +6,10 @@ TEMPLATE = app
 TARGET = ElfMApp
 INCLUDEPATH += .
 
+QT += multimedia
+
 # Input
 SOURCES += main.cpp
 
 HEADERS += \
-    cli_main.h
+	cli_main.h
