@@ -1,5 +1,6 @@
 #include <QString>
 #include <QMediaPlayer>
+#include <QMediaPlaylist>
 
 #include <iostream>
 
@@ -7,8 +8,9 @@
 #include "command_reader.h"
 
 Player::Player(QObject *parent)
-  : QObject(parent),
-	player(new QMediaPlayer(this))
+  : QObject(parent)
+  , player(new QMediaPlayer(this))
+  , playlist(new QMediaPlaylist(this))
 {
 	CommandReader *reader = new CommandReader(this);
 
@@ -32,4 +34,30 @@ void Player::processLine(QString str){
 	player->play();
 
 	connect(player, SIGNAL(stateChanged(QMediaPlayer::State)), this, SIGNAL(finished()));
+}
+
+void Player::addToPlaylist(const QList<QUrl> urls){
+	for( const QUrl &url: urls){
+		playlist->addMedia(url);
+	}
+}
+
+void Player::jump(int index){
+	int count = playlist->mediaCount();
+	if(index < count && index >= 0){
+		playlist->setCurrentIndex(index);
+		player->play();
+	}
+}
+
+void Player::seek(double secs){
+	player->setPosition( (int) (secs * 1000) );
+}
+
+void Player::setPlaybackRate(double rate){
+	player->setPlaybackRate(rate);
+}
+
+void Player::displayErrorMessage(){
+	std::cerr << player->errorString().toStdString() << "\n";
 }

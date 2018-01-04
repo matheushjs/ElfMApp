@@ -7,12 +7,13 @@ TARGET = ElfMApp
 INCLUDEPATH += .
 
 QT += multimedia
+CONFIG += c++11
 
 # Input
 SOURCES += main.cpp \
-    command_reader.cpp \
-    player.cpp
+	command_reader.cpp \
+	player.cpp
 
 HEADERS += \
-    command_reader.h \
-    player.h
+	command_reader.h \
+	player.h
