@@ -3,21 +3,21 @@
 
 #include <iostream>
 
-#include "cli_main.h"
+#include "player.h"
 #include "command_reader.h"
 
-CLI_Main::CLI_Main(QObject *parent)
+Player::Player(QObject *parent)
   : QObject(parent),
 	player(new QMediaPlayer(this))
 {
 	CommandReader *reader = new CommandReader(this);
 
-	connect(reader, &CommandReader::gotLine, this, &CLI_Main::processLine, Qt::BlockingQueuedConnection);
+	connect(reader, &CommandReader::gotLine, this, &Player::processLine, Qt::BlockingQueuedConnection);
 
 	reader->start();
 }
 
-void CLI_Main::processLine(QString str){
+void Player::processLine(QString str){
 	std::cout << str.toStdString() << "\n";
 
 	QString path = QDir().absoluteFilePath("Lasting.mp3");

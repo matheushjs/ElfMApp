@@ -6,14 +6,14 @@
 class QMediaPlayer;
 class QString;
 
-class CLI_Main : public QObject
+class Player : public QObject
 {
 	Q_OBJECT
 
 	QMediaPlayer *player;
 
 public:
-	CLI_Main(QObject *parent = 0);
+	Player(QObject *parent = 0);
 
 public slots:
 	void processLine(QString str);

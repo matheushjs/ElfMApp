@@ -10,9 +10,9 @@ QT += multimedia
 
 # Input
 SOURCES += main.cpp \
-    cli_main.cpp \
-    command_reader.cpp
+    command_reader.cpp \
+    player.cpp
 
 HEADERS += \
-	cli_main.h \
-    command_reader.h
+    command_reader.h \
+    player.h
