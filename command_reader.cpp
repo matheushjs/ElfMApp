@@ -15,34 +15,60 @@ CommandReader::CommandReader(QObject *parent)
 	parser.addHelpOption();
 
 	parser.addOptions({
-		{{"p", "play"}, "Show progress during copy"},
-		{{"n", "next"}, "Advances to next song"},
-		{{"b", "back"}, "Plays the previous song"}
+		{{"n", "next"}, "Advances to next song", "integer displacement"},
+		{{"b", "back"}, "Plays the previous song", "integer displacement"},
+		{{"r", "rate"}, "Changes playback rate", "floating-point rate"}
 	});
 }
 
 void CommandReader::process(const QString &str){
-	QStringList list = (" " + str).split(" ");
+	QStringList list = (" " + str + " ").split(" ");
 	parser.process(list);
 
 	for(const QString &s: list)
-		std::cout << s.toStdString() << "|";
+		std::cout << "{" << s.toStdString() << "}";
 	std::cout << "\n";
 
 	QString val;
 
-	if(parser.isSet("play")){
-		std::cout << "Play!\n";
-		return;
-	}
-
 	if(parser.isSet("next")){
-		std::cout << "Next!\n";
+		QString val = parser.value("next");
+
+		int jump = 1;
+		if(val.size() != 0)
+			jump = val.toInt();
+
+		if(jump >= 0)
+			emit nextRequest(jump);
+
 		return;
 	}
 
 	if(parser.isSet("back")){
-		std::cout << "Back!\n";
+		QString val = parser.value("back");
+
+		int jump = 1;
+		if(val.size() != 0)
+			jump = val.toInt();
+
+		if(jump >= 0)
+			emit backRequest(jump);
+
+		return;
+	}
+
+	if(parser.isSet("rate")){
+		QString val = parser.value("rate");
+
+		double rate = 1.0;
+		if(val.size() != 0)
+			rate = val.toFloat();
+
+		std::cout << val.toStdString() << "\n";
+
+		if(rate > 0.0)
+			emit rateRequest(rate);
+
 		return;
 	}
 }

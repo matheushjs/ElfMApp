@@ -16,12 +16,12 @@ class Player : public QObject
 
 public:
 	Player(QObject *parent = 0);
+	int currentIndex() const;
 
 public slots:
-	void processLine(QString str);
-
 	void addToPlaylist(const QList<QUrl> urls);
-	void jump(int index);
+	void jumpTo(int index);
+	void jump(int displacement);
 	// void playlistPositionChanged(int currentItem);
 	void seek(double secs);
 	void setPlaybackRate(double rate);

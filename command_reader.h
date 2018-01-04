@@ -20,6 +20,10 @@ public:
 
 signals:
 	void gotLine(QString string);
+
+	void nextRequest(int jump);
+	void backRequest(int jump);
+	void rateRequest(double rate);
 };
 
 #endif // COMMAND_READER_H

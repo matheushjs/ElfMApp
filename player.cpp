@@ -1,6 +1,7 @@
 #include <QString>
 #include <QMediaPlayer>
 #include <QMediaPlaylist>
+#include <QTimer>
 
 #include <iostream>
 
@@ -14,26 +15,16 @@ Player::Player(QObject *parent)
 {
 	CommandReader *reader = new CommandReader(this);
 
-	connect(reader, &CommandReader::gotLine, this, &Player::processLine, Qt::BlockingQueuedConnection);
+	connect(reader, &CommandReader::nextRequest, this, [this](int a){ this->jump(a); });
+	connect(reader, &CommandReader::backRequest, this, [this](int a){ this->jump(-a); });
+	connect(reader, &CommandReader::rateRequest, this, &Player::setPlaybackRate);
+
+	player->setPlaylist(playlist);
+	playlist->setCurrentIndex(0);
+	player->setVolume(100);
 
 	reader->start();
-}
-
-void Player::processLine(QString str){
-	std::cout << str.toStdString() << "\n";
-
-	QString path = QDir().absoluteFilePath("Lasting.mp3");
-
-	if(player->state() == QMediaPlayer::PlayingState){
-		return;
-	}
-
-	player->setMedia(QUrl::fromLocalFile(path));
-	player->setVolume(50);
-	player->setPlaybackRate(5.0);
-	player->play();
-
-	connect(player, SIGNAL(stateChanged(QMediaPlayer::State)), this, SIGNAL(finished()));
+	QTimer::singleShot(0, this, [this](){ this->jumpTo(0); });
 }
 
 void Player::addToPlaylist(const QList<QUrl> urls){
@@ -42,12 +33,27 @@ void Player::addToPlaylist(const QList<QUrl> urls){
 	}
 }
 
-void Player::jump(int index){
+void Player::jumpTo(int index){
 	int count = playlist->mediaCount();
+	if(count == 0) return;
+
 	if(index < count && index >= 0){
 		playlist->setCurrentIndex(index);
 		player->play();
 	}
+}
+
+void Player::jump(int displacement){
+	int count = playlist->mediaCount();
+	int request = playlist->currentIndex() + displacement;
+
+	if(count == 0) return;
+
+	while(request < 0)
+		request += count;
+
+	request = request % count;
+	jumpTo(request);
 }
 
 void Player::seek(double secs){
@@ -55,9 +61,19 @@ void Player::seek(double secs){
 }
 
 void Player::setPlaybackRate(double rate){
+	int pos = player->position();
+	int index = playlist->currentIndex();
+	player->pause();
 	player->setPlaybackRate(rate);
+	playlist->setCurrentIndex(index);
+	player->setPosition(pos);
+	player->play();
 }
 
 void Player::displayErrorMessage(){
 	std::cerr << player->errorString().toStdString() << "\n";
+}
+
+int Player::currentIndex() const {
+	return playlist->currentIndex();
 }
