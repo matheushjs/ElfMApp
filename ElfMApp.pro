@@ -9,7 +9,10 @@ INCLUDEPATH += .
 QT += multimedia
 
 # Input
-SOURCES += main.cpp
+SOURCES += main.cpp \
+    cli_main.cpp \
+    command_reader.cpp
 
 HEADERS += \
-	cli_main.h
+	cli_main.h \
+    command_reader.h

@@ -10,7 +10,5 @@ int main(int argc, char *argv[])
 	CLI_Main *cli = new CLI_Main(&a);
 	QObject::connect(cli, SIGNAL(finished()), &a, SLOT(quit()));
 
-	QTimer::singleShot(0, cli, SLOT(run()));
-
 	return a.exec();
 }
