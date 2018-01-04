@@ -1,5 +1,6 @@
 #include "command_reader.h"
 
+#include <QString>
 #include <iostream>
 #include <string>
 

@@ -1,4 +1,5 @@
 #include <QString>
+#include <QMediaPlayer>
 
 #include <iostream>
 

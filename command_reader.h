@@ -3,6 +3,8 @@
 
 #include <QThread>
 
+class QString;
+
 class CommandReader : public QThread
 {
 	Q_OBJECT

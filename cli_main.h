@@ -2,7 +2,9 @@
 #define CLI_MAIN
 
 #include <QtCore>
-#include <QMediaPlayer>
+
+class QMediaPlayer;
+class QString;
 
 class CLI_Main : public QObject
 {
