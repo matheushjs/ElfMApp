@@ -2,12 +2,17 @@
 #define COMMAND_READER_H
 
 #include <QThread>
+#include <QCommandLineParser>
 
 class QString;
 
 class CommandReader : public QThread
 {
 	Q_OBJECT
+
+	QCommandLineParser parser;
+
+	void process(const QString &str);
 
 public:
 	CommandReader(QObject *parent = 0);
