@@ -11,6 +11,7 @@ class CommandReader : public QThread
 	Q_OBJECT
 
 	QCommandLineParser parser;
+	QString lastCommand;
 
 	void process(const QString &str);
 
@@ -19,6 +20,8 @@ public:
 	void run();
 
 signals:
+	void errorMessage(QString str);
+
 	/* These signals will only validate the type of the user-given parameters.
 	 * Validations regarding specifics of the Media Player should be made in the
 	 *   receiver object.

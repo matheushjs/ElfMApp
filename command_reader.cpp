@@ -8,7 +8,8 @@
 #include <string>
 
 CommandReader::CommandReader(QObject *parent)
-  : QThread(parent)
+  : QThread(parent),
+	lastCommand("")
 {
 	// -abc treated as 'abc' instead of 'a' 'b' 'c'
 	parser.setSingleDashWordOptionMode(QCommandLineParser::ParseAsLongOptions);
@@ -36,45 +37,104 @@ void CommandReader::process(const QString &str){
 		std::cout << "{" << s.toStdString() << "}";
 	std::cout << "\n";
 
+	// In case the command is 'redo', we will restore 'lastCommand' using variable 'aux'
+	QString aux = lastCommand;
+	lastCommand = str;
+
 	QString val;
+	bool good;
 
 	if(parser.isSet("next")){
-		QString val = parser.value("next");
+		val = parser.value("next");
+		int jump = val.toInt(&good);
 
-		int jump = 1;
-		if(val.size() != 0)
-			jump = val.toInt();
+		if(val.size() == 0) jump = 1, good = true; // Default value
 
-		if(jump >= 0)
-			emit nextRequest(jump);
+		if(good) emit nextRequest(jump);
+		else emit errorMessage("Invallid argument. Expected integer.");
 
 		return;
 	}
 
 	if(parser.isSet("back")){
-		QString val = parser.value("back");
+		val = parser.value("back");
+		int jump = val.toInt(&good);
 
-		int jump = 1;
-		if(val.size() != 0)
-			jump = val.toInt();
+		if(val.size() == 0) jump = 1, good = true; // Default value
 
-		if(jump >= 0)
-			emit backRequest(jump);
+		if(good) emit backRequest(jump);
+		else emit errorMessage("Invallid argument. Expected integer.");
 
 		return;
 	}
 
 	if(parser.isSet("rate")){
-		QString val = parser.value("rate");
+		val = parser.value("rate");
+		double rate = val.toDouble(&good);
 
-		double rate = 1.0;
-		if(val.size() != 0)
-			rate = val.toFloat();
+		if(val.size() == 0) rate = 1, good = true; // Default value
 
-		std::cout << val.toStdString() << "\n";
+		if(good) emit rateRequest(rate);
+		else emit errorMessage("Invallid argument. Expected double.");
 
-		if(rate > 0.0)
-			emit rateRequest(rate);
+		return;
+	}
+
+	if(parser.isSet("quit")){
+		emit quitRequest();
+		return;
+	}
+
+	if(parser.isSet("adv")){
+		val = parser.value("adv");
+		double step = val.toDouble(&good);
+
+		if(val.size() == 0) step = 5, good = true; // Default value
+
+		if(good) emit advanceRequest(step);
+		else emit errorMessage("Invallid argument. Expected double.");
+
+		return;
+	}
+
+	if(parser.isSet("rew")){
+		val = parser.value("rew");
+		double step = val.toDouble(&good);
+
+		if(val.size() == 0) step = 5, good = true; // Default value
+
+		if(good) emit rewindRequest(step);
+		else emit errorMessage("Invallid argument. Expected double.");
+
+		return;
+	}
+
+	if(parser.isSet("rm")){
+		emit removeRequest();
+		return;
+	}
+
+	if(parser.isSet("redo")){
+		lastCommand = aux;
+
+		// Creating a new object will spare us from possible bugs
+		QString proc = lastCommand;
+		process(proc);
+
+		return;
+	}
+
+	if(parser.isSet("list")){
+		emit listRequest();
+		return;
+	}
+
+	if(parser.isSet("select")){
+		val = parser.value("select");
+		int idx = val.toInt(&good);
+
+		if(good) emit selectRequest(idx);
+		else emit errorMessage("Invallid argument. Expected integer.");
 
 		return;
 	}
