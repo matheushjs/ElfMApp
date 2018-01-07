@@ -17,7 +17,14 @@ CommandReader::CommandReader(QObject *parent)
 	parser.addOptions({
 		{{"n", "next"}, "Advances to next song", "integer displacement"},
 		{{"b", "back"}, "Plays the previous song", "integer displacement"},
-		{{"r", "rate"}, "Changes playback rate", "floating-point rate"}
+		{{"r", "rate"}, "Changes playback rate", "floating-point rate"},
+		{{"q", "quit"}, "Exits the program"},
+		{{"z", "adv"}, "Forwards current song by some seconds", "floating-point seconds"},
+		{{"x", "rew"}, "Rewinds current song by some seconds", "floating-point seconds"},
+		{{"d", "rm"}, "Deletes current song from drive"},
+		{{".", "redo"}, "Repeats last command"},
+		{{"l", "list"}, "Lists current playlist"},
+		{{"s", "select"}, "Selects specific song from playlist", "integer index"}
 	});
 }
 
