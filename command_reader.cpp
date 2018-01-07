@@ -13,7 +13,6 @@ CommandReader::CommandReader(QObject *parent)
 {
 	// -abc treated as 'abc' instead of 'a' 'b' 'c'
 	parser.setSingleDashWordOptionMode(QCommandLineParser::ParseAsLongOptions);
-	parser.addHelpOption();
 
 	parser.addOptions({
 		{{"n", "next"}, "Advances to next song", "integer displacement"},
@@ -25,7 +24,8 @@ CommandReader::CommandReader(QObject *parent)
 		{{"d", "rm"}, "Deletes current song from drive"},
 		{{".", "redo"}, "Repeats last command"},
 		{{"l", "list"}, "Lists current playlist"},
-		{{"s", "select"}, "Selects specific song from playlist", "integer index"}
+		{{"s", "select"}, "Selects specific song from playlist", "integer index"},
+		{{"h", "help"}, "Displays this help message"}
 	});
 }
 
@@ -138,6 +138,11 @@ void CommandReader::process(const QString &str){
 
 		return;
 	}
+
+	if(parser.isSet("help")){
+		emit helpRequest();
+		return;
+	}
 }
 
 void CommandReader::run(){
@@ -148,4 +153,8 @@ void CommandReader::run(){
 		getline(cin, str);
 		process(QString(str.c_str()));
 	}
+}
+
+QString CommandReader::helpMessage() const {
+	return parser.helpText();
 }

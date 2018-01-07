@@ -18,6 +18,7 @@ class CommandReader : public QThread
 public:
 	CommandReader(QObject *parent = 0);
 	void run();
+	QString helpMessage() const;
 
 signals:
 	void errorMessage(QString str);
@@ -35,6 +36,7 @@ signals:
 	void removeRequest(void);
 	void listRequest(void);
 	void selectRequest(int index);
+	void helpRequest(void);
 };
 
 #endif // COMMAND_READER_H
