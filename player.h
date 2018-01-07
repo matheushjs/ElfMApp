@@ -17,20 +17,23 @@ class Player : public QObject
 public:
 	Player(QObject *parent = 0);
 	int currentIndex() const;
+	int mediaCount() const;
 
 public slots:
 	void addToPlaylist(const QList<QUrl> urls);
-	void jumpTo(int index);
-	void jump(int displacement);
-	// void playlistPositionChanged(int currentItem);
-	void seek(double secs);
+
+	void next(int jump);
+	void back(int jump);
 	void setPlaybackRate(double rate);
-	// void statusChanged(QMediaPlayer::MediaStatus status);
-	// void stateChanged(QMediaPlayer::State state);
-	void displayErrorMessage();
+	void forward(double step);
+	void rewind(double step);
+	void deleteCurrentFromDrive(void);
+	void listPlaylist(void);
+	void setSong(int index);
+	void displayErrorMessage(void);
 
 signals:
-	void finished();
+	void finished(void);
 };
 
 #endif // CLI_MAIN
