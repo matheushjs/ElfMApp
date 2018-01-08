@@ -6,6 +6,7 @@
 #include <QMediaPlayer>
 
 class QMediaPlaylist;
+class CommandReader;
 
 class Player : public QObject
 {
@@ -13,6 +14,7 @@ class Player : public QObject
 
 	QMediaPlayer *player;
 	QMediaPlaylist *playlist;
+	CommandReader *reader;
 
 	// Players for holding metadata of each song
 	QVector<QMediaPlayer *> infoPlayers;
@@ -21,6 +23,7 @@ class Player : public QObject
 
 public:
 	Player(const QList<QUrl> &urls, QObject *parent = 0);
+	~Player();
 	int currentIndex() const;
 	int mediaCount() const;
 

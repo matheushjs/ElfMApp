@@ -12,6 +12,7 @@ class CommandReader : public QThread
 
 	QCommandLineParser parser;
 	QString lastCommand;
+	bool quitFlag;
 
 	void process(const QString &str);
 

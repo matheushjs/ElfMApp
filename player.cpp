@@ -17,9 +17,8 @@ Player::Player(const QList<QUrl> &urls, QObject *parent)
   : QObject(parent)
   , player(new QMediaPlayer(this))
   , playlist(new QMediaPlaylist(this))
+  , reader(new CommandReader(this))
 {
-	CommandReader *reader = new CommandReader(this);
-
 	connect(reader, SIGNAL(nextRequest(int)), this, SLOT(next(int)));
 	connect(reader, SIGNAL(backRequest(int)), this, SLOT(back(int)));
 	connect(reader, SIGNAL(rateRequest(double)), this, SLOT(setPlaybackRate(double)));
@@ -30,7 +29,7 @@ Player::Player(const QList<QUrl> &urls, QObject *parent)
 	connect(reader, SIGNAL(listRequest()), this, SLOT(listPlaylist()));
 	connect(reader, SIGNAL(selectRequest(int)), this, SLOT(setSong(int)));
 	connect(reader, &CommandReader::errorMessage, [](QString str){ std::cout << "\n" << str.toStdString() << "\n"; });
-	connect(reader, &CommandReader::helpRequest, [reader](){ std::cout << reader->helpMessage().toStdString() << "\n"; });
+	connect(reader, &CommandReader::helpRequest, [this](){ std::cout << this->reader->helpMessage().toStdString() << "\n"; });
 
 	connect(player, SIGNAL(stateChanged(QMediaPlayer::State)), this, SLOT(onStatusChanged(QMediaPlayer::State)));
 	connect(player, SIGNAL(mediaStatusChanged(QMediaPlayer::MediaStatus)), this, SLOT(onMediaStatusChanged(QMediaPlayer::MediaStatus)));
@@ -48,6 +47,10 @@ Player::Player(const QList<QUrl> &urls, QObject *parent)
 
 	reader->start();
 	QTimer::singleShot(0, this, [this](){ this->setSong(0); });
+}
+
+Player::~Player(){
+	reader->wait();
 }
 
 QString Player::durationString(int ms) const {

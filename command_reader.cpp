@@ -9,7 +9,8 @@
 
 CommandReader::CommandReader(QObject *parent)
   : QThread(parent),
-	lastCommand("")
+	lastCommand(""),
+	quitFlag(false)
 {
 	// -abc treated as 'abc' instead of 'a' 'b' 'c'
 	parser.setSingleDashWordOptionMode(QCommandLineParser::ParseAsLongOptions);
@@ -82,6 +83,7 @@ void CommandReader::process(const QString &str){
 
 	if(parser.isSet("quit")){
 		emit quitRequest();
+		quitFlag = true;
 		return;
 	}
 
@@ -148,7 +150,7 @@ void CommandReader::process(const QString &str){
 void CommandReader::run(){
 	using namespace std;
 
-	while(true){
+	while(!quitFlag){
 		string str;
 		getline(cin, str);
 		process(QString(str.c_str()));
