@@ -3,7 +3,7 @@
 ######################################################################
 
 TEMPLATE = app
-TARGET = ElfMApp
+TARGET = elfmapp
 INCLUDEPATH += .
 
 QT += multimedia

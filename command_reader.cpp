@@ -32,7 +32,7 @@ CommandReader::CommandReader(QObject *parent)
 }
 
 void CommandReader::process(const QString &str){
-	QStringList list = (" " + str + " ").split(" ");
+	QStringList list = ("./elfmapp " + str + " ").split(" ");
 
 	if(!parser.parse(list)){
 		emit errorMessage("Could not parse. Use -h for displaying the available commands.");

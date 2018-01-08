@@ -35,6 +35,7 @@ Player::Player(const QList<QUrl> &urls, QObject *parent)
 	connect(player, SIGNAL(stateChanged(QMediaPlayer::State)), this, SLOT(onStatusChanged(QMediaPlayer::State)));
 	connect(player, SIGNAL(mediaStatusChanged(QMediaPlayer::MediaStatus)), this, SLOT(onMediaStatusChanged(QMediaPlayer::MediaStatus)));
 
+	playlist->setPlaybackMode(QMediaPlaylist::Loop);
 	player->setPlaylist(playlist);
 	player->setVolume(100);
 
