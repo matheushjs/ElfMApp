@@ -3,8 +3,8 @@
 
 #include <QtCore>
 #include <QVector>
+#include <QMediaPlayer>
 
-class QMediaPlayer;
 class QMediaPlaylist;
 
 class Player : public QObject
@@ -20,7 +20,7 @@ class Player : public QObject
 	void addToPlaylist(const QList<QUrl> urls);
 
 public:
-	Player(const QList<QUrl> urls, QObject *parent = 0);
+	Player(const QList<QUrl> &urls, QObject *parent = 0);
 	int currentIndex() const;
 	int mediaCount() const;
 
@@ -37,6 +37,8 @@ public slots:
 
 	// Slots for the MediaPlayer
 	void displayErrorMessage(void);
+	void onStatusChanged(QMediaPlayer::State status);
+	void onMediaStatusChanged(QMediaPlayer::MediaStatus status);
 
 signals:
 	void finished(void);

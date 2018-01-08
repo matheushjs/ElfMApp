@@ -13,7 +13,7 @@
 #include "player.h"
 #include "command_reader.h"
 
-Player::Player(const QList<QUrl> urls, QObject *parent)
+Player::Player(const QList<QUrl> &urls, QObject *parent)
   : QObject(parent)
   , player(new QMediaPlayer(this))
   , playlist(new QMediaPlaylist(this))
@@ -31,6 +31,9 @@ Player::Player(const QList<QUrl> urls, QObject *parent)
 	connect(reader, SIGNAL(selectRequest(int)), this, SLOT(setSong(int)));
 	connect(reader, &CommandReader::errorMessage, [](QString str){ std::cout << str.toStdString() << "\n"; });
 	connect(reader, &CommandReader::helpRequest, [reader](){ std::cout << reader->helpMessage().toStdString() << "\n"; });
+
+	connect(player, SIGNAL(stateChanged(QMediaPlayer::State)), this, SLOT(onStatusChanged(QMediaPlayer::State)));
+	connect(player, SIGNAL(mediaStatusChanged(QMediaPlayer::MediaStatus)), this, SLOT(onMediaStatusChanged(QMediaPlayer::MediaStatus)));
 
 	player->setPlaylist(playlist);
 	player->setVolume(100);
@@ -71,7 +74,7 @@ void Player::setPlaybackRate(double rate){
 
 	int pos = player->position();
 	int index = currentIndex();
-	player->pause();
+	//player->pause();
 	player->setPlaybackRate(rate);
 	playlist->setCurrentIndex(index);
 	player->setPosition(pos);
@@ -105,11 +108,37 @@ void Player::listPlaylist(){
 
 void Player::setSong(int index){
 	if(index < 0 || index >= mediaCount()) return;
-	player->pause();
 	playlist->setCurrentIndex(index);
 	player->play();
 }
 
 void Player::displayErrorMessage(){
 	std::cerr << player->errorString().toStdString() << "\n";
+}
+
+void Player::onStatusChanged(QMediaPlayer::State status){
+	switch(status){
+	case QMediaPlayer::StoppedState:
+		std::cout << "Stopped\n";
+		break;
+	case QMediaPlayer::PlayingState:
+		std::cout << "Playing\n";
+		break;
+	case QMediaPlayer::PausedState:
+		std::cout << "Paused\n";
+		break;
+	}
+}
+
+void Player::onMediaStatusChanged(QMediaPlayer::MediaStatus status){
+	if(status == QMediaPlayer::BufferedMedia){
+		std::cout << "Now Playing:\n";
+		std::cout << "\tTitle:     " << "\"" << player->metaData(QMediaMetaData::Title).toString().toStdString() << "\"\n";
+
+		int ms = player->duration();
+		int min = ms / (60 * 1000);
+		int sec = (ms % (60 * 1000)) / 1000;
+		int mili = ms % 1000;
+		std::cout << "\tDuration:  " << QString("%1m %2s %3ms").arg(min).arg(sec).arg(mili).toStdString() << "\n";
+	}
 }
