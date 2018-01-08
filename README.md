@@ -6,18 +6,21 @@ ElfMApp is an application designed for evaluating songs on command-line.
 The available options are as follows:
 
 ```
-  -n, --next <integer displacement>   Advances to next song
-  -b, --back <integer displacement>   Plays the previous song
-  -r, --rate <floating-point rate>    Changes playback rate
-  -q, --quit                          Exits the program
-  -z, --adv <floating-point seconds>  Forwards current song by some seconds
-  -x, --rew <floating-point seconds>  Rewinds current song by some seconds
-  -d, --rm                            Deletes current song from drive
-  -., --redo                          Repeats last command
-  -l, --list                          Lists current playlist
-  -s, --select <integer index>        Selects specific song from playlist
-  -i, --info                          Shows information about current song
-  -h, --help                          Displays this help message
+  -n, --next <integer displacement = 1>     Advances to next song
+  -b, --back <integer displacement = 1>     Plays the previous song
+  -r, --rate <floating-point rate = 1.0>    Changes playback rate
+  -q, --quit                                Exits the program
+  -z, --adv <floating-point seconds = 5.0>  Forwards current song by some
+                                            seconds
+  -x, --rew <floating-point seconds = 5.0>  Rewinds current song by some
+                                            seconds
+  -d, --rm                                  Deletes current song from drive
+  -., --redo                                Repeats last command
+  -l, --list                                Lists current playlist
+  -s, --select <integer index>              Selects specific song from playlist
+  -i, --info                                Shows information about current
+                                            song
+  -h, --help                                Displays this help message
 ```
 
 Usage
@@ -26,7 +29,7 @@ Usage
 - Beginning the program
 
 ```
-$ ./elfmapp Venture2.mp3  Venture.mp3  Village Dance.mp3  Village Fate.mp3  Village Life.mp3  Voyage.mp3
+$ ./elfmapp Venture2.mp3  Venture.mp3  "Village Dance.mp3"  "Village Fate.mp3"  "Village Life.mp3"  Voyage.mp3
 
 Playing song 0
 Playing

@@ -16,12 +16,12 @@ CommandReader::CommandReader(QObject *parent)
 	parser.setSingleDashWordOptionMode(QCommandLineParser::ParseAsLongOptions);
 
 	parser.addOptions({
-		{{"n", "next"}, "Advances to next song", "integer displacement"},
-		{{"b", "back"}, "Plays the previous song", "integer displacement"},
-		{{"r", "rate"}, "Changes playback rate", "floating-point rate"},
+		{{"n", "next"}, "Advances to next song", "integer displacement = 1"},
+		{{"b", "back"}, "Plays the previous song", "integer displacement = 1"},
+		{{"r", "rate"}, "Changes playback rate", "floating-point rate = 1.0"},
 		{{"q", "quit"}, "Exits the program"},
-		{{"z", "adv"}, "Forwards current song by some seconds", "floating-point seconds"},
-		{{"x", "rew"}, "Rewinds current song by some seconds", "floating-point seconds"},
+		{{"z", "adv"}, "Forwards current song by some seconds", "floating-point seconds = 5.0"},
+		{{"x", "rew"}, "Rewinds current song by some seconds", "floating-point seconds = 5.0"},
 		{{"d", "rm"}, "Deletes current song from drive"},
 		{{".", "redo"}, "Repeats last command"},
 		{{"l", "list"}, "Lists current playlist"},
