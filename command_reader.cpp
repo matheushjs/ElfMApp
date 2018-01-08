@@ -31,7 +31,11 @@ CommandReader::CommandReader(QObject *parent)
 
 void CommandReader::process(const QString &str){
 	QStringList list = (" " + str + " ").split(" ");
-	parser.process(list);
+
+	if(!parser.parse(list)){
+		emit errorMessage("Could not parse. Use -h for displaying the available commands.");
+		return;
+	}
 
 	for(const QString &s: list)
 		std::cout << "{" << s.toStdString() << "}";
