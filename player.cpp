@@ -102,7 +102,25 @@ void Player::rewind(double step){
 }
 
 void Player::deleteCurrentFromDrive(){
-	std::cerr << "To be implemented\n";
+	std::cout << "\nRemoving media\n";
+	player->stop();
+
+	int idx = currentIndex();
+	playlist->removeMedia(idx);
+	QMediaPlayer *rm = infoPlayers[idx];
+	infoPlayers.remove(idx);
+
+	if(mediaCount() == 0){
+		std::cout << "\nThere are no more media items\n";
+		emit finished();
+		return;
+	}
+
+	QMediaContent cont = rm->media();
+	QFile fp(cont.canonicalUrl().toLocalFile());
+	fp.remove();
+
+	setSong(idx % mediaCount());
 }
 
 void Player::listPlaylist(){
