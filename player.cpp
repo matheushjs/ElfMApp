@@ -29,7 +29,7 @@ Player::Player(const QList<QUrl> &urls, QObject *parent)
 	connect(reader, SIGNAL(removeRequest()), this, SLOT(deleteCurrentFromDrive()));
 	connect(reader, SIGNAL(listRequest()), this, SLOT(listPlaylist()));
 	connect(reader, SIGNAL(selectRequest(int)), this, SLOT(setSong(int)));
-	connect(reader, &CommandReader::errorMessage, [](QString str){ std::cout << str.toStdString() << "\n"; });
+	connect(reader, &CommandReader::errorMessage, [](QString str){ std::cout << "\n" << str.toStdString() << "\n"; });
 	connect(reader, &CommandReader::helpRequest, [reader](){ std::cout << reader->helpMessage().toStdString() << "\n"; });
 
 	connect(player, SIGNAL(stateChanged(QMediaPlayer::State)), this, SLOT(onStatusChanged(QMediaPlayer::State)));
@@ -48,6 +48,13 @@ Player::Player(const QList<QUrl> &urls, QObject *parent)
 
 	reader->start();
 	QTimer::singleShot(0, this, [this](){ this->setSong(0); });
+}
+
+QString Player::durationString(int ms) const {
+	int min = ms / (60 * 1000);
+	int sec = (ms % (60 * 1000)) / 1000;
+	int mili = ms % 1000;
+	return QString("%1m %2s %3ms").arg(min).arg(sec).arg(mili);
 }
 
 int Player::currentIndex() const {
@@ -72,10 +79,10 @@ void Player::back(int jump){
 
 void Player::setPlaybackRate(double rate){
 	if(rate < 0 || rate >= 5) return;
+	std::cout << "\nSetting rate to " << rate << "\n";
 
 	int pos = player->position();
 	int index = currentIndex();
-	//player->pause();
 	player->setPlaybackRate(rate);
 	playlist->setCurrentIndex(index);
 	player->setPosition(pos);
@@ -85,11 +92,13 @@ void Player::setPlaybackRate(double rate){
 void Player::forward(double step){
 	if(step < 0) return;
 	player->setPosition(player->position() + step * 1000);
+	std::cout << durationString(player->position()).toStdString() << " (forwarded " << step << " seconds)" << "\n";
 }
 
 void Player::rewind(double step){
 	if(step < 0) return;
 	player->setPosition(player->position() - step * 1000);
+	std::cout << durationString(player->position()).toStdString() << " (rewinded " << step << " seconds)" << "\n";
 }
 
 void Player::deleteCurrentFromDrive(){
@@ -98,6 +107,7 @@ void Player::deleteCurrentFromDrive(){
 
 void Player::listPlaylist(){
 	int i = 0;
+	std::cout << "\nListing songs\n";
 	for(QMediaPlayer *&p: infoPlayers){
 		if(p->isMetaDataAvailable()){
 			std::cout << i++ << ": " << p->metaData(QMediaMetaData::Title).toString().toStdString() << "\n";
@@ -109,12 +119,13 @@ void Player::listPlaylist(){
 
 void Player::setSong(int index){
 	if(index < 0 || index >= mediaCount()) return;
+	std::cout << "\nPlaying song " << index << "\n";
 	playlist->setCurrentIndex(index);
 	player->play();
 }
 
 void Player::displayErrorMessage(){
-	std::cerr << player->errorString().toStdString() << "\n";
+	std::cerr << "\n" << player->errorString().toStdString() << "\n";
 }
 
 void Player::onStatusChanged(QMediaPlayer::State status){
@@ -133,13 +144,8 @@ void Player::onStatusChanged(QMediaPlayer::State status){
 
 void Player::onMediaStatusChanged(QMediaPlayer::MediaStatus status){
 	if(status == QMediaPlayer::BufferedMedia){
-		std::cout << "Now Playing:\n";
+		std::cout << "\nNow Playing:\n";
 		std::cout << "\tTitle:     " << "\"" << player->metaData(QMediaMetaData::Title).toString().toStdString() << "\"\n";
-
-		int ms = player->duration();
-		int min = ms / (60 * 1000);
-		int sec = (ms % (60 * 1000)) / 1000;
-		int mili = ms % 1000;
-		std::cout << "\tDuration:  " << QString("%1m %2s %3ms").arg(min).arg(sec).arg(mili).toStdString() << "\n";
+		std::cout << "\tDuration:  " << durationString(player->duration()).toStdString() << "\n";
 	}
 }

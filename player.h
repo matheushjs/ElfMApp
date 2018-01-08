@@ -17,7 +17,7 @@ class Player : public QObject
 	// Players for holding metadata of each song
 	QVector<QMediaPlayer *> infoPlayers;
 
-	void addToPlaylist(const QList<QUrl> urls);
+	QString durationString(int ms) const;
 
 public:
 	Player(const QList<QUrl> &urls, QObject *parent = 0);
