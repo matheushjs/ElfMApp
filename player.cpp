@@ -38,7 +38,8 @@ Player::Player(const QList<QUrl> &urls, QObject *parent)
 	player->setPlaylist(playlist);
 	player->setVolume(100);
 
-	infoPlayers.fill(new QMediaPlayer(this), urls.size());
+	for(int i = 0; i < urls.size(); i++)
+		infoPlayers.push_back(new QMediaPlayer(this));
 
 	for(int i = 0; i < urls.size(); i++){
 		playlist->addMedia(urls[i]);
