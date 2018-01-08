@@ -37,6 +37,7 @@ signals:
 	void removeRequest(void);
 	void listRequest(void);
 	void selectRequest(int index);
+	void infoRequest(void);
 	void helpRequest(void);
 };
 

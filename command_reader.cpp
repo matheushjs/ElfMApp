@@ -26,6 +26,7 @@ CommandReader::CommandReader(QObject *parent)
 		{{".", "redo"}, "Repeats last command"},
 		{{"l", "list"}, "Lists current playlist"},
 		{{"s", "select"}, "Selects specific song from playlist", "integer index"},
+		{{"i", "info"}, "Shows information about current song"},
 		{{"h", "help"}, "Displays this help message"}
 	});
 }
@@ -138,6 +139,11 @@ void CommandReader::process(const QString &str){
 		if(good) emit selectRequest(idx);
 		else emit errorMessage("Invallid argument. Expected integer.");
 
+		return;
+	}
+
+	if(parser.isSet("info")){
+		emit infoRequest();
 		return;
 	}
 

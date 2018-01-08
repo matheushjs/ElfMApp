@@ -37,6 +37,7 @@ public slots:
 	void deleteCurrentFromDrive(void);
 	void listPlaylist(void);
 	void setSong(int index);
+	void showInfo(void);
 
 	// Slots for the MediaPlayer
 	void displayErrorMessage(void);

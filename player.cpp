@@ -28,6 +28,7 @@ Player::Player(const QList<QUrl> &urls, QObject *parent)
 	connect(reader, SIGNAL(removeRequest()), this, SLOT(deleteCurrentFromDrive()));
 	connect(reader, SIGNAL(listRequest()), this, SLOT(listPlaylist()));
 	connect(reader, SIGNAL(selectRequest(int)), this, SLOT(setSong(int)));
+	connect(reader, SIGNAL(infoRequest()), this, SLOT(showInfo()));
 	connect(reader, &CommandReader::errorMessage, [](QString str){ std::cout << "\n" << str.toStdString() << "\n"; });
 	connect(reader, &CommandReader::helpRequest, [this](){ std::cout << this->reader->helpMessage().toStdString() << "\n"; });
 
@@ -143,6 +144,21 @@ void Player::setSong(int index){
 	std::cout << "\nPlaying song " << index << "\n";
 	playlist->setCurrentIndex(index);
 	player->play();
+}
+
+void Player::showInfo(void){
+	QString position = durationString(player->position());
+	QString duration = durationString(player->duration());
+
+	int pos = currentIndex();
+	QString title;
+	if(infoPlayers[pos]->isMetaDataAvailable()){
+		title = infoPlayers[pos]->metaData(QMediaMetaData::Title).toString();
+	} else title = "Metadata not yet available.";
+
+	std::cout << "\n"
+			  << "\tTitle:    " << "\"" << title.toStdString() << "\"\n"
+			  << "\tPosition: " << position.toStdString() << " / " << duration.toStdString() << "\n";
 }
 
 void Player::displayErrorMessage(){
