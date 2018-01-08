@@ -1,14 +1,19 @@
 #include <QString>
 #include <QMediaPlayer>
 #include <QMediaPlaylist>
+#include <QMediaMetaData>
 #include <QTimer>
 
+/* std::cout is only used in this class Player
+ * std::cin, only in the class CommandReader
+ * In this way, we avoid concurrently usage of these streams
+ */
 #include <iostream>
 
 #include "player.h"
 #include "command_reader.h"
 
-Player::Player(QObject *parent)
+Player::Player(const QList<QUrl> urls, QObject *parent)
   : QObject(parent)
   , player(new QMediaPlayer(this))
   , playlist(new QMediaPlaylist(this))
@@ -30,6 +35,13 @@ Player::Player(QObject *parent)
 	player->setPlaylist(playlist);
 	player->setVolume(100);
 
+	infoPlayers.fill(new QMediaPlayer(this), urls.size());
+
+	for(int i = 0; i < urls.size(); i++){
+		playlist->addMedia(urls[i]);
+		infoPlayers[i]->setMedia(urls[i]);
+	}
+
 	reader->start();
 	QTimer::singleShot(0, this, [this](){ this->setSong(0); });
 }
@@ -40,12 +52,6 @@ int Player::currentIndex() const {
 
 int Player::mediaCount() const {
 	return playlist->mediaCount();
-}
-
-void Player::addToPlaylist(const QList<QUrl> urls){
-	for(const QUrl &url: urls){
-		playlist->addMedia(url);
-	}
 }
 
 void Player::next(int jump){
@@ -87,7 +93,14 @@ void Player::deleteCurrentFromDrive(){
 }
 
 void Player::listPlaylist(){
-	std::cerr << "To be implemented\n";
+	int i = 0;
+	for(QMediaPlayer *&p: infoPlayers){
+		if(p->isMetaDataAvailable()){
+			std::cout << i++ << ": " << p->metaData(QMediaMetaData::Title).toString().toStdString() << "\n";
+		} else {
+			std::cout << i++ << ": MData Unavailable\n";
+		}
+	}
 }
 
 void Player::setSong(int index){

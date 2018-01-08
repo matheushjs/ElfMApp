@@ -18,8 +18,7 @@ int main(int argc, char *argv[])
 	QUrl path = QUrl::fromLocalFile(QDir().absoluteFilePath(QString(argv[1])));
 	std::cout << path.toString().toStdString() << "\n";
 
-	Player *cli = new Player(&a);
-	cli->addToPlaylist(QList<QUrl>({ path }));
+	Player *cli = new Player(QList<QUrl>({ path }), &a);
 
 	QObject::connect(cli, SIGNAL(finished()), &a, SLOT(quit()));
 

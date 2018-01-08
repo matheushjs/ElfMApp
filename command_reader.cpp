@@ -37,10 +37,6 @@ void CommandReader::process(const QString &str){
 		return;
 	}
 
-	for(const QString &s: list)
-		std::cout << "{" << s.toStdString() << "}";
-	std::cout << "\n";
-
 	// In case the command is 'redo', we will restore 'lastCommand' using variable 'aux'
 	QString aux = lastCommand;
 	lastCommand = str;

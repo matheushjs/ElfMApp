@@ -2,10 +2,10 @@
 #define CLI_MAIN
 
 #include <QtCore>
+#include <QVector>
 
 class QMediaPlayer;
 class QMediaPlaylist;
-class QString;
 
 class Player : public QObject
 {
@@ -14,14 +14,18 @@ class Player : public QObject
 	QMediaPlayer *player;
 	QMediaPlaylist *playlist;
 
+	// Players for holding metadata of each song
+	QVector<QMediaPlayer *> infoPlayers;
+
+	void addToPlaylist(const QList<QUrl> urls);
+
 public:
-	Player(QObject *parent = 0);
+	Player(const QList<QUrl> urls, QObject *parent = 0);
 	int currentIndex() const;
 	int mediaCount() const;
 
 public slots:
-	void addToPlaylist(const QList<QUrl> urls);
-
+	// Slots for responding to the user
 	void next(int jump);
 	void back(int jump);
 	void setPlaybackRate(double rate);
@@ -30,6 +34,8 @@ public slots:
 	void deleteCurrentFromDrive(void);
 	void listPlaylist(void);
 	void setSong(int index);
+
+	// Slots for the MediaPlayer
 	void displayErrorMessage(void);
 
 signals:
