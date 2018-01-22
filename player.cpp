@@ -115,15 +115,16 @@ void Player::deleteCurrentFromDrive(){
 	QMediaPlayer *rm = infoPlayers[idx];
 	infoPlayers.remove(idx);
 
-	if(mediaCount() == 0){
-		std::cout << "\nThere are no more media items\n";
-		emit finished();
-		return;
-	}
-
 	QMediaContent cont = rm->media();
 	QFile fp(cont.canonicalUrl().toLocalFile());
 	fp.remove();
+
+	if(mediaCount() == 0){
+		std::cout << "\nThere are no more media items\n";
+		reader->terminate();
+		emit finished();
+		return;
+	}
 
 	setSong(idx % mediaCount());
 }
