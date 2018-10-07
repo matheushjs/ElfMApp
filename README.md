@@ -1,6 +1,8 @@
 ElfMApp
 ===
 
+<img src="https://mjsaldanha.com/images/elf_icon.png" width="128" height="128">
+
 ElfMApp is an application designed for evaluating songs on command-line.
 
 The available options are as follows:
