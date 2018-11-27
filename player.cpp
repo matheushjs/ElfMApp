@@ -141,7 +141,11 @@ void Player::rename(){
 
     QMediaContent cont = rm->media();
     QFile fp(cont.canonicalUrl().toLocalFile());
-    fp.rename("trash_song");
+
+    // Get the name of the file
+    QString fname = fp.fileName().split("/").back();
+    fname = QString("trash_") + fname;
+    fp.rename(fname);
 
     if(mediaCount() == 0){
         std::cout << "\nThere are no more media items\n";
