@@ -35,6 +35,7 @@ public slots:
 	void forward(double step);
 	void rewind(double step);
 	void deleteCurrentFromDrive(void);
+    void rename(void);
 	void listPlaylist(void);
 	void setSong(int index);
 	void showInfo(void);

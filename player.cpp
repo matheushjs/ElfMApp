@@ -26,6 +26,7 @@ Player::Player(const QList<QUrl> &urls, QObject *parent)
 	connect(reader, SIGNAL(advanceRequest(double)), this, SLOT(forward(double)));
 	connect(reader, SIGNAL(rewindRequest(double)), this, SLOT(rewind(double)));
 	connect(reader, SIGNAL(removeRequest()), this, SLOT(deleteCurrentFromDrive()));
+    connect(reader, SIGNAL(renameRequest()), this, SLOT(rename()));
 	connect(reader, SIGNAL(listRequest()), this, SLOT(listPlaylist()));
 	connect(reader, SIGNAL(selectRequest(int)), this, SLOT(setSong(int)));
 	connect(reader, SIGNAL(infoRequest()), this, SLOT(showInfo()));
@@ -127,6 +128,29 @@ void Player::deleteCurrentFromDrive(){
 	}
 
 	setSong(idx % mediaCount());
+}
+
+void Player::rename(){
+    std::cout << "\nRenaming media\n";
+    player->stop();
+
+    int idx = currentIndex();
+    playlist->removeMedia(idx);
+    QMediaPlayer *rm = infoPlayers[idx];
+    infoPlayers.remove(idx);
+
+    QMediaContent cont = rm->media();
+    QFile fp(cont.canonicalUrl().toLocalFile());
+    fp.rename("trash_song");
+
+    if(mediaCount() == 0){
+        std::cout << "\nThere are no more media items\n";
+        reader->terminate();
+        emit finished();
+        return;
+    }
+
+    setSong(idx % mediaCount());
 }
 
 void Player::listPlaylist(){

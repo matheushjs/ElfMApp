@@ -27,7 +27,8 @@ CommandReader::CommandReader(QObject *parent)
 		{{"l", "list"}, "Lists current playlist"},
 		{{"s", "select"}, "Selects specific song from playlist", "integer index"},
 		{{"i", "info"}, "Shows information about current song"},
-		{{"h", "help"}, "Displays this help message"}
+        {{"h", "help"}, "Displays this help message"},
+        {{"e", "rename"}, "Renames file to 'mark' it, and remove it from the playlist."},
 	});
 }
 
@@ -151,6 +152,11 @@ void CommandReader::process(const QString &str){
 		emit helpRequest();
 		return;
 	}
+
+    if(parser.isSet("rename")){
+        emit renameRequest();
+        return;
+    }
 }
 
 void CommandReader::run(){

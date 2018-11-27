@@ -39,6 +39,7 @@ signals:
 	void selectRequest(int index);
 	void infoRequest(void);
 	void helpRequest(void);
+    void renameRequest(void);
 };
 
 #endif // COMMAND_READER_H
