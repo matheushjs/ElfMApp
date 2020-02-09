@@ -127,3 +127,10 @@ Building
 ---
 
 QtCreator in a system with support for the multimedia module and for c++11 should be able to build this project.
+
+If you have `qmake` in your machine:
+
+```
+qmake -makefile
+make -j 4
+```
